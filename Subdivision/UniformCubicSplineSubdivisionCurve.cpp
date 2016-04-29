@@ -20,6 +20,23 @@ void UniformCubicSplineSubdivisionCurve::Subdivide()
 
   // Implement the subdivision scheme for a natural cubic spline here
 
+  // nyaCoeff = S			*			gamlaCoeff
+  // 2k+2   (k+1)*(2k+2)				  k+1
+  // double amount of coeff
+
+  // Create S by first
+  // create zero matrix with dimensions (k+1)*(2k+2)
+  // fill in 1/8(1, 4, 6, 4, 1) in the right positions of the matrix
+  // with for loop over coulumns(k+1)
+
+  for (int i = 0; i < k+1; ++i) {
+	  S[2*i+0][i] = 1.0;
+	  S[2*i+1][i] = 4.0;
+	  S[2*i+2][i] = 6.0;
+	  S[2*i+3][i] = 4.0;
+	  S[2*i+4][i] = 1.0;
+  }
+  S = 1/8 * S;
 
   // If 'mCoefficients' had size N, how large should 'newc' be? Perform a check here!
   assert(true && "Incorrect number of new coefficients!");
