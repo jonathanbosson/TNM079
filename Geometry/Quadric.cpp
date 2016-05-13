@@ -24,7 +24,9 @@ Quadric::~Quadric(){}
  */
 float Quadric::GetValue(float x, float y, float z) const
 {
-  return 0;
+	TransformW2O(x, y, z);
+	Vector4<float> xVec(x, y, z, 1.0f);
+	return xVec * (mQuadric * xVec);
 }
 
 /*!
@@ -32,6 +34,9 @@ float Quadric::GetValue(float x, float y, float z) const
  */
 Vector3<float> Quadric::GetGradient(float x, float y, float z) const
 {
-  return Vector3<float>(0,0,0);
+	TransformW2O(x, y, z);
+	Vector4<float> pVec(x, y, z, 1.0f);
+	pVec = 2.0f * (mQuadric * pVec);
+	return Vector3<float>(pVec[0], pVec[1], pVec[2]);
 }
 

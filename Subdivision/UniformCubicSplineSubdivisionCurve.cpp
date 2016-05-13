@@ -10,6 +10,10 @@ UniformCubicSplineSubdivisionCurve::UniformCubicSplineSubdivisionCurve(const std
   this->mLineWidth = lineWidth;
 }
 
+int factorial(int n)
+{
+  return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
+}
 
 void UniformCubicSplineSubdivisionCurve::Subdivide()
 {
@@ -19,27 +23,17 @@ void UniformCubicSplineSubdivisionCurve::Subdivide()
   assert(mCoefficients.size() > 4 && "Need at least 5 points to subdivide");
 
   // Implement the subdivision scheme for a natural cubic spline here
+  newc.push_back(mCoefficients.at(0));
+  newc.push_back(0.5*mCoefficients.at(0) + 0.5*mCoefficients.at(1));
 
-  // nyaCoeff = S			*			gamlaCoeff
-  // 2k+2   (k+1)*(2k+2)				  k+1
-  // double amount of coeff
-
-  // Create S by first
-  // create zero matrix with dimensions (k+1)*(2k+2)
-  // fill in 1/8(1, 4, 6, 4, 1) in the right positions of the matrix
-  // with for loop over coulumns(k+1)
-
-  for (int i = 0; i < k+1; ++i) {
-	  S[2*i+0][i] = 1.0;
-	  S[2*i+1][i] = 4.0;
-	  S[2*i+2][i] = 6.0;
-	  S[2*i+3][i] = 4.0;
-	  S[2*i+4][i] = 1.0;
+  for (int i = 1; i < mCoefficients.size() - 1; ++i) {
+	  newc.push_back(0.125*(1*mCoefficients.at(i-1) + 6*mCoefficients.at(i) + 1*mCoefficients.at(i+1)));
+	  newc.push_back(0.5*mCoefficients.at(i) + 0.5*mCoefficients.at(i+1));
   }
-  S = 1/8 * S;
+  newc.push_back(mCoefficients.at(mCoefficients.size()-1));
 
   // If 'mCoefficients' had size N, how large should 'newc' be? Perform a check here!
-  assert(true && "Incorrect number of new coefficients!");
+  assert((newc.size() == 2*mCoefficients.size()) && "Incorrect number of new coefficients!");
   
   mCoefficients = newc;
 }

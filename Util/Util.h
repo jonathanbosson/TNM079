@@ -15,6 +15,7 @@
 #include <string> // for string
 #include <algorithm> //for transform
 #include <cmath>
+#include < functional > 
 
 //! \brief Convert a string to lowercase
 std::string& Lower(std::string & str);

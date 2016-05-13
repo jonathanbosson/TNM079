@@ -103,7 +103,20 @@ Vector3<float> LoopSubdivisionMesh::VertexRule(unsigned int vertexIndex)
 {
   // Get the current vertex
   Vector3<float> vtx = v(vertexIndex).pos;
+  std::vector<unsigned int> oneRing = HalfEdgeMesh::FindNeighborVertices(vertexIndex);
+  /*float W = 5.0f/8.0f - ( pow(3+2*cos(2*M_PI/oneRing.size()), 2) / 64.0f );
+  vtx = vtx * (1 - W);
 
+  for (int i = 0; i < oneRing.size(); ++i) {
+	  v(oneRing.at(i)).pos = v(oneRing.at(i)).pos * (W/oneRing.size());
+  }
+  */
+  float b = Beta(oneRing.size());
+  vtx *= (1 - oneRing.size()*b);
+
+  for (int i = 0; i < oneRing.size(); ++i) {
+	  vtx += v(oneRing.at(i)).pos * b;
+  }
 
   return vtx;
 }
@@ -119,7 +132,12 @@ Vector3<float> LoopSubdivisionMesh::EdgeRule(unsigned int edgeIndex)
   HalfEdge & e1 = e(e0.pair);
   Vector3<float> & v0 = v(e0.vert).pos;
   Vector3<float> & v1 = v(e1.vert).pos;
-  return (v0 + v1) * 0.5;
+
+  Vector3<float> & v2 = v(e(e0.prev).vert).pos;
+  Vector3<float> & v3 = v(e(e1.prev).vert).pos;
+
+  return ( (3.0f/8.0f) * (v0 + v1) + (1.0f/8.0f) * (v2 + v3) );
+  //return (v0 + v1) / 2.0f;
 }
 
 //! Return weights for interior verts
