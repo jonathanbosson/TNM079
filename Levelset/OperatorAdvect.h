@@ -38,7 +38,7 @@ public :
   {
     // Compute and return a stable timestep
     // (Hint: Function3D::GetMaxValue())
-    return 1;
+    return mLS->GetDx() / mVectorField->GetMaxValue().Length();
   }
 
   virtual void Propagate(float time)
