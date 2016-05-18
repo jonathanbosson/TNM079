@@ -788,7 +788,7 @@ void FrameMain::AddObjectImplicitMesh( wxCommandEvent& event )
 void FrameMain::AddObjectQuadricPlane( wxCommandEvent& event )
 {
   // Construct the quadric matrix here
-  float a = 2.0f, b = 2.0, c = 4.0f;
+  float a = 1.0f, b = 1.0, c = 1.0f;
   float m[4][4] = {{0, 0, 0, a/2.0f},
 				  {0, 0, 0, b/2.},
 				  {0, 0, 0, c/2.},

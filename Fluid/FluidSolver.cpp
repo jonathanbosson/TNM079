@@ -171,6 +171,11 @@ void FluidSolver::ExternalForces(float dt)
         // the integration to update the velocity field (mVelocityField). The simplest
         // possible integrator is the explicit Euler.
         // TODO: Add code here
+		  TransformGridToWorld(i,j,k,x,y,z);
+		  if(IsFluid(i,j,k)){
+			   Vector3<float> val = mVelocityField.GetValue(x,y,z) + dt*mExternalForces->GetValue(x,y,z);
+			   mVelocityField.SetValue(i,j,k, val);
+		  }
       }
     }
   }
@@ -182,7 +187,7 @@ void FluidSolver::SelfAdvection(float dt, int steps)
 {
   // Copy the current velocity field
   Volume<Vector3<float> > velocities = mVelocityField;
-
+  float x, y, z;
   for (int i = 0; i < mVoxels.GetDimX(); i++) {
     for (int j = 0; j < mVoxels.GetDimY(); j++) {
       for (int k = 0; k < mVoxels.GetDimZ(); k++) {
@@ -209,6 +214,7 @@ void FluidSolver::SelfAdvection(float dt, int steps)
 // Enforce the Dirichlet boundary conditions
 void FluidSolver::EnforceDirichletBoundaryCondition()
 {
+  Vector3<float> val(0.0,0.0,0.0);
   for (int i = 0; i < mVoxels.GetDimX(); i++) {
     for (int j = 0; j < mVoxels.GetDimY(); j++) {
       for (int k = 0; k < mVoxels.GetDimZ(); k++) {
@@ -218,6 +224,24 @@ void FluidSolver::EnforceDirichletBoundaryCondition()
         // the velocity to the boundary plane by setting the
         // velocity to zero along the given dimension.
         // TODO: Add code here
+		  if (IsFluid(i,j,k)) {
+			  // X
+			  if (!IsFluid(i-1,j,k) && mVelocityField.GetValue(i,j,k)[0] < 0) 
+				  mVelocityField.SetValue(i,j,k, val);
+			  else if (!IsFluid(i+1,j,k) && mVelocityField.GetValue(i,j,k)[0] < 0)
+				  mVelocityField.SetValue(i,j,k,val);
+			  // Y
+			  if (!IsFluid(i,j-1,k) && mVelocityField.GetValue(i,j,k)[1] < 0) 
+				  mVelocityField.SetValue(i,j,k, val);
+			  else if (!IsFluid(i,j+1,k) && mVelocityField.GetValue(i,j,k)[1] < 0)
+				  mVelocityField.SetValue(i,j,k,val);
+			  // Z
+			  if (!IsFluid(i,j,k-1) && mVelocityField.GetValue(i,j,k)[2] < 0) 
+				  mVelocityField.SetValue(i,j,k, val);
+			  else if (!IsFluid(i,j,k+1) && mVelocityField.GetValue(i,j,k)[2] < 0)
+				  mVelocityField.SetValue(i,j,k,val);
+		  }
+
       }
     }
   }

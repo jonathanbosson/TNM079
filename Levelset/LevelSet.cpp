@@ -136,7 +136,7 @@ Vector3<float> LevelSet::GetGradient(float x, float y, float z) const
 	float fx = DiffXpm(x,y,z);
 	float fy = DiffYpm(x,y,z);
 	float fz = DiffZpm(x,y,z);
-	return Vector3<float>(fx, fy, fz);
+	return Vector3<float>(fx, fy, fz).Normalize();
 }
 
 
