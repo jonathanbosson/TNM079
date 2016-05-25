@@ -89,7 +89,7 @@ public :
 	  else
 		  grad[2] = mLS->DiffZm(i,j,k);
 
-	  return ((-1*v) * grad);
+	  return ((-v) * grad);
   }
 
 };

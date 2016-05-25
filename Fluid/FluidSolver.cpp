@@ -173,7 +173,7 @@ void FluidSolver::ExternalForces(float dt)
         // TODO: Add code here
 		  TransformGridToWorld(i,j,k,x,y,z);
 		  if(IsFluid(i,j,k)){
-			   Vector3<float> val = mVelocityField.GetValue(x,y,z) + dt*mExternalForces->GetValue(x,y,z);
+			   Vector3<float> val = mVelocityField.GetValue(i,j,k) + dt*mExternalForces->GetValue(x,y,z);
 			   mVelocityField.SetValue(i,j,k, val);
 		  }
       }
@@ -228,19 +228,19 @@ void FluidSolver::EnforceDirichletBoundaryCondition()
 			  
 			  val = mVelocityField.GetValue(i,j,k);
 			  // X
-			  if (!IsFluid(i-1,j,k) && mVelocityField.GetValue(i,j,k)[0] < 0) 
+			  if (IsSolid(i-1,j,k) && mVelocityField.GetValue(i,j,k)[0] < 0) 
 				  val[0] = 0.0;
-			  else if (!IsFluid(i+1,j,k) && mVelocityField.GetValue(i,j,k)[0] > 0)
+			  else if (IsSolid(i+1,j,k) && mVelocityField.GetValue(i,j,k)[0] > 0)
 				  val[0] = 0.0;
 			  // Y
-			  if (!IsFluid(i,j-1,k) && mVelocityField.GetValue(i,j,k)[1] < 0) 
+			  if (IsSolid(i,j-1,k) && mVelocityField.GetValue(i,j,k)[1] < 0) 
 				  val[1] = 0.0;
-			  else if (!IsFluid(i,j+1,k) && mVelocityField.GetValue(i,j,k)[1] > 0)
+			  else if (IsSolid(i,j+1,k) && mVelocityField.GetValue(i,j,k)[1] > 0)
 				  val[1] = 0.0;
 			  // Z
-			  if (!IsFluid(i,j,k-1) && mVelocityField.GetValue(i,j,k)[2] < 0) 
+			  if (IsSolid(i,j,k-1) && mVelocityField.GetValue(i,j,k)[2] < 0) 
 				  val[2] = 0.0;
-			  else if (!IsFluid(i,j,k+1) && mVelocityField.GetValue(i,j,k)[2] > 0)
+			  else if (IsSolid(i,j,k+1) && mVelocityField.GetValue(i,j,k)[2] > 0)
 				 val[2] = 0.0;
 			mVelocityField.SetValue(i,j,k,val);
 			
@@ -307,8 +307,8 @@ void FluidSolver::Projection()
           // a solid (allow no change of flow in that direction).
           // Remember to treat the boundaries of (i,j,k).
           // TODO: Add code here
-		  int list[7] = { IsFluid(i+1,j,k), IsFluid(i-1,j,k), IsFluid(i,j+1,k), 0,
-		  IsFluid(i,j-1,k), IsFluid(i,j,k+1), IsFluid(i,j,k-1) };
+		  int list[7] = { !IsSolid(i+1,j,k), !IsSolid(i-1,j,k), !IsSolid(i,j+1,k), 0,
+		  !IsSolid(i,j-1,k), !IsSolid(i,j,k+1), !IsSolid(i,j,k-1) };
 		  int sum = 0;
 		 
 		  A(ind, ind_ip) = list[0]/dx2;
